@@ -32,6 +32,7 @@ jobs:
           path: |
             gamescope.tzst
             gamescope.tzst.sha256
+            gamescope.debug
       - name: Publish
         if: github.event_name == 'workflow_dispatch' && inputs.tag != ''
         env:

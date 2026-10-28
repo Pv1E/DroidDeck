@@ -38,6 +38,8 @@ else
   prepare() { _droiddeck_prepare; }
 fi
 PREP
+# Keep symbols and debug info; the shipped binary is stripped below, the copy resolves crash backtraces.
+echo \"options+=('!strip' 'debug')\" >> PKGBUILD
 makepkg -A -s --noconfirm --skipchecksums --skippgpcheck
 meson test -C src/build --no-rebuild --print-errorlogs cursor_routing wayland_scaling
 ls -l *.pkg.tar.*
@@ -48,6 +50,7 @@ PKG=$(ls pkg/arch/gamescope-*.pkg.tar.* | grep -v -- '-debug-' | head -1)
 tar --use-compress-program=unzstd -xf "$PKG" -C out --strip-components=2 usr/bin/gamescope
 mv out/gamescope out/usr/local/bin/gamescope
 chmod 755 out/usr/local/bin/gamescope
+cp out/usr/local/bin/gamescope gamescope.debug
 strip --strip-unneeded out/usr/local/bin/gamescope || true
 # The WSI layer carries patches too (0117); the runtime's stock copy is replaced.
 mkdir -p out/usr/lib
